@@ -1,0 +1,256 @@
+BRK impl
+ORA X,ind
+null
+null
+null
+ORA zpg
+ASL zpg
+null
+PHP impl
+ORA #
+ASL A
+null
+null
+ORA abs
+ASL abs
+null
+BPL rel
+ORA ind,Y
+null
+null
+null
+ORA zpg,X
+ASL zpg,X
+null
+CLC impl
+ORA abs,Y
+null
+null
+null
+ORA abs,X
+ASL abs,X
+null
+JSR abs
+AND X,ind
+null
+null
+BIT zpg
+AND zpg
+ROL zpg
+null
+PLP impl
+AND #
+ROL A
+null
+BIT abs
+AND abs
+ROL abs
+null
+BMI rel
+AND ind,Y
+null
+null
+null
+AND zpg,X
+ROL zpg,X
+null
+SEC impl
+AND abs,Y
+null
+null
+null
+AND abs,X
+ROL abs,X
+null
+RTI impl
+EOR X,ind
+null
+null
+null
+EOR zpg
+LSR zpg
+null
+PHA impl
+EOR #
+LSR A
+null
+JMP abs
+EOR abs
+LSR abs
+null
+BVC rel
+EOR ind,Y
+null
+null
+null
+EOR zpg,X
+LSR zpg,X
+null
+CLI impl
+EOR abs,Y
+null
+null
+null
+EOR abs,X
+LSR abs,X
+null
+RTS impl
+ADC X,ind
+null
+null
+null
+ADC zpg
+ROR zpg
+null
+PLA impl
+ADC #
+ROR A
+null
+JMP ind
+ADC abs
+ROR abs
+null
+BVS rel
+ADC ind,Y
+null
+null
+null
+ADC zpg,X
+ROR zpg,X
+null
+SEI impl
+ADC abs,Y
+null
+null
+null
+ADC abs,X
+ROR abs,X
+null
+null
+STA X,ind
+null
+null
+STY zpg
+STA zpg
+STX zpg
+null
+DEY impl
+null
+TXA impl
+null
+STY abs
+STA abs
+STX abs
+null
+BCC rel
+STA ind,Y
+null
+null
+STY zpg,X
+STA zpg,X
+STX zpg,Y
+null
+TYA impl
+STA abs,Y
+TXS impl
+null
+null
+STA abs,X
+null
+null
+LDY #
+LDA X,ind
+LDX #
+null
+LDY zpg
+LDA zpg
+LDX zpg
+null
+TAY impl
+LDA #
+TAX impl
+null
+LDY abs
+LDA abs
+LDX abs
+null
+BCS rel
+LDA ind,Y
+null
+null
+LDY zpg,X
+LDA zpg,X
+LDX zpg,Y
+null
+CLV impl
+LDA abs,Y
+TSX impl
+null
+LDY abs,X
+LDA abs,X
+LDX abs,Y
+null
+CPY #
+CMP X,ind
+null
+null
+CPY zpg
+CMP zpg
+DEC zpg
+null
+INY impl
+CMP #
+DEX impl
+null
+CPY abs
+CMP abs
+DEC abs
+null
+BNE rel
+CMP ind,Y
+null
+null
+null
+CMP zpg,X
+DEC zpg,X
+null
+CLD impl
+CMP abs,Y
+null
+null
+null
+CMP abs,X
+DEC abs,X
+null
+CPX #
+SBC X,ind
+null
+null
+CPX zpg
+SBC zpg
+INC zpg
+null
+INX impl
+SBC #
+NOP impl
+null
+CPX abs
+SBC abs
+INC abs
+null
+BEQ rel
+SBC ind,Y
+null
+null
+null
+SBC zpg,X
+INC zpg,X
+null
+SED impl
+SBC abs,Y
+null
+null
+null
+SBC abs,X
+INC abs,X
+null

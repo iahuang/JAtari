@@ -1,0 +1,50 @@
+public class MemRef {
+    public int mode;
+    public int address;
+    public byte immediate;
+
+    /*
+     * 0: Null (cannot be modified, returns zero)
+     * 1: By address
+     * 2: Accumulator
+     * 3: X
+     * 4: Y
+     * 5: Stack Pointer
+     * 6: Processor Flags
+     * 7: Immediate
+     */
+    public MemRef(int mode) {
+        this.mode = mode;
+    }
+
+    public MemRef(int mode, int address) {
+        this.mode = mode;
+        this.address = address;
+    }
+    public MemRef(byte immediate) {
+        this.mode = 7;
+        this.immediate = immediate;
+    }
+    public boolean isAddressed() {
+        return this.mode == 1;
+    }
+    public static final MemRef NULL = new MemRef(0);
+    public static final MemRef RA = new MemRef(2);
+    public static final MemRef RX = new MemRef(3);
+    public static final MemRef RY = new MemRef(4);
+    public static final MemRef RS = new MemRef(5);
+    public static final MemRef RP = new MemRef(6);
+
+    public static MemRef address(int address) {
+        return new MemRef(1, address);
+    }
+
+    public static MemRef address(byte a, byte b) {
+        return new MemRef(1, b_uint16(b,a));
+    }
+
+    public static MemRef immediate(byte x) {
+        return new MemRef(x);
+    }
+    
+}

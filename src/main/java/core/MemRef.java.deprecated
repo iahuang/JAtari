@@ -1,0 +1,98 @@
+package core;
+
+import static core.TypeConvert.*;
+// A static reference to memory accessible by the 6502.
+// There was an attempt to be object-oriented.
+
+public class MemRef {
+    public byte get(CPU c) {
+        return 0;
+    }
+
+    public static class Register extends MemRef {
+        public int rnum;
+        public Register(int rnum) {
+            this.rnum = rnum;
+        }
+        public byte get(CPU c) {
+            return new byte[] {c.reg.A,c.reg.X,c.reg.Y,c.reg.S,c.reg.P}[rnum];
+        }
+    }
+
+    public static MemRef rA = new Register(0);
+    public static MemRef rX = new Register(1);
+    public static MemRef rY = new Register(2);
+    public static MemRef rS = new Register(3);
+    public static MemRef rP = new Register(4);
+
+    public static class Addressed extends MemRef {
+        public int addSize = 1; // How many bytes the address takes up in ROM (8 bit or 16 bit?)
+        int loc;
+
+        public Addressed(int loc) {
+            this.loc = loc;
+        }
+    }
+
+    public static class Immediate {
+        public int value;
+
+        public Immediate(int value) {
+            this.value = value;
+        }
+
+        public byte get(CPU c) {
+            return (byte) value;
+        }
+    }
+
+    public static class Absolute extends Addressed {
+        public Absolute(int loc) {
+            super(loc);
+            this.addSize = addSize;
+        }
+
+        public byte get(CPU c) {
+            return c.data[loc];
+        }
+    }
+
+    public static class Indexed extends Addressed {
+        MemRef reg;
+
+        public Indexed(int value, MemRef reg) {
+            super(value);
+            this.reg = reg;
+        }
+    }
+
+    public static class AbsoluteIdx extends Indexed {
+        public AbsoluteIdx(int value, MemRef reg) {
+            super(value, reg);
+            this.addSize = addSize;
+        }
+
+        public byte get(CPU c) {
+            return c.data[loc + b_uint8(reg.get(c))];
+        }
+    }
+
+    public static class Indirect extends Indexed {
+        boolean offsetFirst;
+
+        public Indirect(int loc, MemRef reg, boolean offsetFirst) {
+            super(loc, reg);
+            this.offsetFirst = offsetFirst;
+        }
+
+        public byte get(CPU c) {
+            if (offsetFirst) {
+                int pointer = loc + b_uint8(reg.get(c));
+                return c.data[b_uint16(c.data[pointer], c.data[pointer + 1])];
+            } else {
+                int pointer = b_uint16(c.data[loc], c.data[loc + 1]);
+                return c.data[pointer + b_uint8(reg.get(c))];
+            }
+        }
+    }
+}
