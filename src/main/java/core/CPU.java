@@ -5,9 +5,9 @@ import java.io.InputStream;
 
 import core.Registers.Flags;
 
-// Includes built-in memory. Allocate with new CPU(size)
+// CPU classes include built-in memory. Allocate with new CPU(size)
 
-class CPUBase { // CPU with no instruction definitions
+class CPUBase { // 6502 CPU with no instruction definitions
     public Registers reg;
     public Flags flags;
     public byte[] data;
@@ -16,6 +16,7 @@ class CPUBase { // CPU with no instruction definitions
     OpLoader opl;
 
     public CPUBase (int size) throws IOException {
+        // Initialize a CPU with [size] bytes of RAM for the CPU to access. Max 65536
         reg = new Registers();
         flags = new Flags();
         data = new byte[size];
@@ -23,16 +24,19 @@ class CPUBase { // CPU with no instruction definitions
     }
 
     public void loadPrg(byte[] prg) {
+        // Load a bytearray as a ROM
         this.prg = prg;
         pcl = 0;
     }
 
-    public void loadRom(String romPath) {
+    public void loadRom(String romPath) throws IOException {
+        // Load a ROM file from the disk
         InputStream in = getClass().getClassLoader().getResourceAsStream(romPath);
-        loadPrg(toByteArray(in));
+        loadPrg(new byte[in.available()]);
     }
 
     public void loadHexdump(String hexdump) {
+        // Load a hexdump as a ROM
         prg = new byte[hexdump.length()/2];
 
         for (int i=0; i < hexdump.length(); i+= 2) {
@@ -41,11 +45,8 @@ class CPUBase { // CPU with no instruction definitions
         }
     }
 
-    private byte[] toByteArray(InputStream in) {
-        return null;
-    }
-
     public void runIter() {
+        // Execute the next instruction in ROM
         int opcode = consume(1);
         Instruction inst = opl.opcodes.get((Integer) opcode);
         inst.run(this);
@@ -53,6 +54,7 @@ class CPUBase { // CPU with no instruction definitions
     }
 
     public void setReg(int r, byte b) {
+        // Set a register by index
         switch (r) {
         case 0:
             reg.A = b;
@@ -71,7 +73,8 @@ class CPUBase { // CPU with no instruction definitions
         return new byte[] { reg.A, reg.X, reg.Y, reg.S, reg.P };
     }
 
-    public int consume(int size) { // Parse n bytes into unsigned int and move PCL forward
+    public int consume(int size) {
+        // Parse n bytes into unsigned int and move PCL forward
         int sum = 0;
         for (int i = size-1; i >= 0; i--) {
             byte n = prg[pcl + i];
@@ -84,6 +87,8 @@ class CPUBase { // CPU with no instruction definitions
 }
 
 public class CPU extends CPUBase {
+    // CPU but with specific operations implemented
+    
     public static interface BranchCondition {
         public boolean eval();
     }
