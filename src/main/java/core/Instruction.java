@@ -16,14 +16,14 @@ public class Instruction {
         this.opcode = opcode;
     }
 
-    MemRef buildRef(CPU c) {
+    MemRef buildRef(CPUBase c) {
         return new MemRef(atype.mode, c.consume(atype.addSize), atype.offset, atype.indirect, atype.indexed,
                 atype.offsetFirst);
     }
 
-    public void run(CPU c) {
+    public void run(CPUBase c) {
         MemRef arg = buildRef(c);
-        op.runner.run(c, arg);
+        op.runner.run(arg);
         cycles+=cycles;
         if (plusPage) {
 

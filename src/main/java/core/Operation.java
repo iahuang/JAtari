@@ -5,7 +5,7 @@ public class Operation {
     public String name;
 
     public static interface Op {
-        public void run(CPU c, MemRef arg);
+        public void run(MemRef arg);
     }
     public Operation (String name, Op runner) {
         this.runner = runner;

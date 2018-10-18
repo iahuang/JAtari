@@ -38,8 +38,8 @@ public class OpLoader {
         return a;
     }
 
-    public void Load(ClassLoader cl, String codeTablePath, String cycleTablePath) throws IOException {
-        for (Operation op : Ops.ops) {
+    public void Load(CPU c, ClassLoader cl, String codeTablePath, String cycleTablePath) throws IOException {
+        for (Operation op : c.ops.ops) {
             ops.put(op.name, op);
         }
 

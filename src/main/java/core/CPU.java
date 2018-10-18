@@ -7,7 +7,7 @@ import core.Registers.Flags;
 
 // Includes built-in memory. Allocate with new CPU(size)
 
-public class CPU {
+class CPUBase { // CPU with no instruction definitions
     public Registers reg;
     public Flags flags;
     public byte[] data;
@@ -15,13 +15,12 @@ public class CPU {
     public int pcl; // Program counter
     OpLoader opl;
 
-    public CPU(int size) throws IOException {
+    public CPUBase (int size) throws IOException {
         reg = new Registers();
         flags = new Flags();
         data = new byte[size];
         pcl = 0;
-        opl = new OpLoader();
-        opl.Load(getClass().getClassLoader(), "optable.txt", "cycles.txt");
+        
     }
 
     public void loadPrg(byte[] prg) {
@@ -81,5 +80,74 @@ public class CPU {
         }
         pcl += size;
         return sum;
+    }
+    
+}
+
+public class CPU extends CPUBase {
+    public Ops ops = new Ops();
+    public CPU (int size) throws IOException {
+        super(size);
+        opl = new OpLoader();
+        opl.Load(this, getClass().getClassLoader(), "optable.txt", "cycles.txt");
+    }
+    public class Ops {
+        public byte get(MemRef ref) {
+            return ref.get(CPU.this);
+        }
+        public void setNegative() {
+            flags.negative = reg.A < 0; 
+        }
+        public void setZero() {
+            flags.zero = (reg.A == 0);
+        }
+        public void setZN() {
+            setNegative();
+            setZero();
+        }
+        public Operation[] ops = {
+            new Operation("ADC",(arg) -> {
+                int n = get(arg)+reg.A;
+                flags.overflow = Math.abs(n) > 128;
+                flags.carry = Math.abs(n) > 255;
+                reg.A+=get(arg);
+                setZN();
+            }),
+            new Operation("AND",(arg) -> {
+                reg.A = (byte)(reg.A & get(arg));
+                setZN();
+            }),
+            new Operation("ASL",(arg) -> {
+                flags.carry = ((reg.A << 7) & 1) != 0;
+                reg.A = (byte)(reg.A << 1);
+                setZN();
+            }),
+            new Operation("BCC",(arg) -> {
+                if (!flags.carry) {
+                    pcl+=(int)get(arg);
+                }
+            }),
+            new Operation("BCS",(arg) -> {
+                if (flags.carry) {
+                    pcl+=(int)get(arg);
+                }
+            }),
+            new Operation("BEQ",(arg) -> {
+                if (flags.zero) {
+                    pcl+=(int)get(arg);
+                }
+            }),
+            new Operation("BIT",(arg) -> {
+                reg.A = (byte)(reg.A & get(arg));
+                flags.overflow = ((reg.A << 6) & 1) != 0;
+                flags.negative = ((reg.A << 7) & 1) != 0;
+                setZero();
+            }),
+            new Operation("BCC",(arg) -> {
+                if (!flags.carry) {
+                    pcl += get(arg);
+                }
+            })
+        };
     }
 }
