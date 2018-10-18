@@ -19,8 +19,7 @@ class CPUBase { // CPU with no instruction definitions
         reg = new Registers();
         flags = new Flags();
         data = new byte[size];
-        pcl = 0;
-        
+        pcl = 0;    
     }
 
     public void loadPrg(byte[] prg) {
@@ -85,6 +84,10 @@ class CPUBase { // CPU with no instruction definitions
 }
 
 public class CPU extends CPUBase {
+    public static interface BranchCondition {
+        public boolean eval();
+    }
+
     public Ops ops = new Ops();
     public CPU (int size) throws IOException {
         super(size);
@@ -92,6 +95,13 @@ public class CPU extends CPUBase {
         opl.Load(this, getClass().getClassLoader(), "optable.txt", "cycles.txt");
     }
     public class Ops {
+        public Operation branchOperation(String name, BranchCondition condition) {
+            return new Operation(name,(arg) -> {
+                if (condition.eval()) {
+                    pcl+=get(arg);
+                }
+            });
+        }
         public byte get(MemRef ref) {
             return ref.get(CPU.this);
         }
@@ -143,11 +153,14 @@ public class CPU extends CPUBase {
                 flags.negative = ((reg.A << 7) & 1) != 0;
                 setZero();
             }),
-            new Operation("BCC",(arg) -> {
-                if (!flags.carry) {
-                    pcl += get(arg);
-                }
-            })
+            branchOperation("BCS", ()->{return flags.carry;}),
+            branchOperation("BCC", ()->{return !flags.carry;}),
+            branchOperation("BEQ", ()->{return flags.zero;}),
+            branchOperation("BNE", ()->{return !flags.zero;}),
+            branchOperation("BMI", ()->{return flags.negative;}),
+            branchOperation("BPL", ()->{return !flags.negative;}),
+            branchOperation("BVS", ()->{return flags.overflow;}),
+            branchOperation("BVC", ()->{return !flags.overflow;}),
         };
     }
 }
