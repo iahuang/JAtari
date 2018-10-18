@@ -57,6 +57,9 @@ public class Ops {
             c.flags.overflow = ((c.reg.A << 6) & 1) != 0;
             c.flags.negative = ((c.reg.A << 7) & 1) != 0;
             setZero(c);
+        }),
+        new Operation("BCC",(c, arg) -> {
+            
         })
     };
 }

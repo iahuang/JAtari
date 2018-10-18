@@ -8,6 +8,7 @@ public class Instruction {
     int opcode;
     int cycles;
     boolean plusPage;
+    boolean branching;
 
     public Instruction(int opcode, Operation op, ArgType atype) {
         this.atype = atype;
@@ -23,5 +24,9 @@ public class Instruction {
     public void run(CPU c) {
         MemRef arg = buildRef(c);
         op.runner.run(c, arg);
+        cycles+=cycles;
+        if (plusPage) {
+
+        }
     }
 }

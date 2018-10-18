@@ -59,21 +59,27 @@ public class OpLoader {
                 Instruction inst = new Instruction(opcode, op, atype);
                 opcodes.put((Integer) opcode, inst);
             }
-            
-            
 
             opcode++;
         }
-        
+        // Parse cycle counts
         in = cl.getResourceAsStream(cycleTablePath);
         reader = new BufferedReader(new InputStreamReader(in));
         while ((line = reader.readLine()) != null) {
             String[] splitLine = line.split(" ");
             Integer code = Integer.parseInt(splitLine[0], 16);
             Integer cycleCount = Integer.parseInt(splitLine[1]);
+            String extraCycle = splitLine[2];
             opcodes.get(code).cycles = cycleCount;
-            if (splitLine.length == 3) {
+            
+            // Dynamic cycle count rules
+            switch (extraCycle) {
+            case "pageboundary":
                 opcodes.get(code).plusPage = true;
+
+            case "branch":
+                opcodes.get(code).branching = true;
+
             }
         }
     }
