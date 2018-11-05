@@ -6,9 +6,9 @@ public class Instruction {
     ArgType atype;
     Operation op;
     int opcode;
-    int cycles;
     boolean plusPage;
     boolean branching;
+    int cycles;
 
     public Instruction(int opcode, Operation op, ArgType atype) {
         this.atype = atype;
@@ -21,12 +21,26 @@ public class Instruction {
                 atype.offsetFirst);
     }
 
-    public void run(CPUBase c) {
-        MemRef arg = buildRef(c);
-        op.runner.run(arg);
-        cycles+=cycles;
-        if (plusPage) {
+    int getPage(int n) {
+        return n/256; // Integer division truncates decimals
+    }
 
+    public void run(CPUBase c) {
+        int newCycles = 0; // Cycles run this instruction
+
+        MemRef arg = buildRef(c);
+        int pastPcl = c.pcl;
+        op.runner.run(arg);
+        if (branching) { 
+            // Add +1 cycle if branch operation succeeded, another +! if the PCL changed pages
+            newCycles+=((pastPcl != c.pcl)? 1 : 0) + ((getPage(pastPcl) != getPage(c.pcl))? 1 : 0);   
         }
+
+        newCycles+=cycles; // Add the number of cycles it has to take to run the instruction
+
+        if (plusPage && c.crossedPage) {
+            newCycles+=1; // Add +1 cycle if any memory addresses crossed a page boundary
+        }
+        
     }
 }

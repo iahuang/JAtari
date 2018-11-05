@@ -34,12 +34,17 @@ public class MemRef { // I decided "screw polymorphism" we're doing it this way
         
         if (indexed && offsetFirst) {
             pointer+=b_uint8(regs[offset]);
+
         }
         if (indirect) {
             pointer = b_uint16(c.data[pointer],c.data[pointer+1]);
         }
         if (indexed && !offsetFirst) {
+            int pointerFirst = pointer;
             pointer+=b_uint8(regs[offset]);
+            if (pointerFirst / 256 != pointer / 256) {
+                c.crossedPage = true;
+            }
         }
 
         return pointer;

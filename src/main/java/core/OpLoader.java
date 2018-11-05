@@ -79,7 +79,6 @@ public class OpLoader {
 
             case "branch":
                 opcodes.get(code).branching = true;
-
             }
         }
     }

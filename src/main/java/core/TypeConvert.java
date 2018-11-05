@@ -9,4 +9,7 @@ public class TypeConvert {
     public static int b_uint8(byte a) {
         return a & 0xff;
     }
+    public static int b_dec(byte a) {
+        return 0;
+    }
 }
