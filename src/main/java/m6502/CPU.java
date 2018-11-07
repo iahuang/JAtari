@@ -23,11 +23,21 @@ public class CPU extends CPUBase {
                 }
             });
         }
+
         public Operation placeholder(String name) {
             return new Operation(name,(arg) -> {
                 System.out.println("[WARNING] Ran unimplemented operation "+name);
             });
         }
+
+        public Operation compareOperation(String name, int regId) {
+            return new Operation(name,(arg) -> {
+                flags.carry = getReg(regId) >= get(arg);
+                flags.zero = getReg(regId) == get(arg);
+                flags.negative = getReg(regId) <= get(arg); // NOTE: may be < instead
+            });
+        }
+        
         public byte get(MemRef ref) {
             return ref.get(CPU.this);
         }
@@ -90,6 +100,11 @@ public class CPU extends CPUBase {
             new Operation("CLV", (arg) -> {
                 flags.overflow = false;
             }),
+            // Compare operations
+            compareOperation("CMP", 0),
+            compareOperation("CPX", 1),
+            compareOperation("CPY", 2)
+            
 
         };
 

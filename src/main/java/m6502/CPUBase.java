@@ -60,6 +60,24 @@ public class CPUBase { // 6502 CPU with no instruction definitions
 
     }
 
+    public byte getReg(int r) {
+        // Set a register by index
+        switch (r) {
+        case 0:
+            return reg.A;
+        case 1:
+            return reg.X;
+        case 2:
+            return reg.Y;
+        case 3:
+            return reg.S;
+        case 4:
+            return reg.P;
+        default:
+            return 0;
+        }
+    }
+
     public void setReg(int r, byte b) {
         // Set a register by index
         switch (r) {

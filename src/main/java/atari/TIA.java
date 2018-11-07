@@ -1,4 +1,4 @@
-package m6502;
+package atari;
 
 // The Television Interface Adaptor; essentially a GPU
 public class TIA {
