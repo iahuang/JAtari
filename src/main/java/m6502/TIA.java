@@ -1,4 +1,4 @@
-package core;
+package m6502;
 
 // The Television Interface Adaptor; essentially a GPU
 public class TIA {

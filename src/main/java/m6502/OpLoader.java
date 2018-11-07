@@ -1,4 +1,4 @@
-package core;
+package m6502;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import core.Operation.ArgType;
+import m6502.Operation.ArgType;
 
 public class OpLoader {
     Map<Integer, Instruction> opcodes = new HashMap<>();

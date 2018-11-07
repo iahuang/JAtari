@@ -1,4 +1,4 @@
-package core;
+package m6502;
 
 import java.io.IOException;
 
@@ -83,7 +83,14 @@ public class CPU extends CPUBase {
             }),
             new Operation("CLD", (arg) -> {
                 flags.decimal = false;
-            })
+            }),
+            new Operation("CLI", (arg) -> {
+                flags.irq = false;
+            }),
+            new Operation("CLV", (arg) -> {
+                flags.overflow = false;
+            }),
+
         };
 
     }

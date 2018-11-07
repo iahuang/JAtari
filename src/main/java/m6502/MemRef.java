@@ -1,5 +1,5 @@
-package core;
-import static core.TypeConvert.*;
+package m6502;
+import static m6502.TypeConvert.*;
 
 public class MemRef { // I decided "screw polymorphism" we're doing it this way
     public int mode, index, offset;

@@ -1,4 +1,4 @@
-package core;
+package m6502;
 
 public class Operation {
     public Op runner;

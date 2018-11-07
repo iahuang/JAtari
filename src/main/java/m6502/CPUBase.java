@@ -1,9 +1,9 @@
-package core;
+package m6502;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import core.Registers.Flags;
+import m6502.Registers.Flags;
 
 // CPU classes include built-in memory. Allocate with new CPU(size)
 

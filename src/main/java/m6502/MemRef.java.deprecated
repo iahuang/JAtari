@@ -1,6 +1,6 @@
-package core;
+package m6502;
 
-import static core.TypeConvert.*;
+import static m6502.TypeConvert.*;
 // A static reference to memory accessible by the 6502.
 // There was an attempt to be object-oriented.
 

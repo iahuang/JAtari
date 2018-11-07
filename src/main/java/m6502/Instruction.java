@@ -1,6 +1,6 @@
-package core;
+package m6502;
 
-import core.Operation.ArgType;
+import m6502.Operation.ArgType;
 
 public class Instruction {
     ArgType atype;

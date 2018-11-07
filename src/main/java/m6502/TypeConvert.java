@@ -1,4 +1,4 @@
-package core;
+package m6502;
 
 // For some reason the Java library does not include byte parsing stuff
 
