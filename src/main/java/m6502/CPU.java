@@ -41,15 +41,22 @@ public class CPU extends CPUBase {
         public byte get(MemRef ref) {
             return ref.get(CPU.this);
         }
-        public void setNegative() {
-            flags.negative = reg.A < 0; 
+        public void set(MemRef ref, byte n) {
+            ref.set(CPU.this, n);
         }
-        public void setZero() {
-            flags.zero = (reg.A == 0);
+        public void setNegative(MemRef r) {
+            flags.negative = get(r) < 0; 
+        }
+        public void setZero(MemRef r) {
+            flags.zero = (get(r) == 0);
+        }
+        public void setZN(MemRef r) {
+            setNegative(r);
+            setZero(r);
         }
         public void setZN() {
-            setNegative();
-            setZero();
+            setNegative(MemRef.getRegister(0));
+            setZero(MemRef.getRegister(0));
         }
 
         // The actual implementation for the 6502 operations
@@ -74,7 +81,7 @@ public class CPU extends CPUBase {
                 reg.A = (byte)(reg.A & get(arg));
                 flags.overflow = ((reg.A << 6) & 1) != 0;
                 flags.negative = ((reg.A << 7) & 1) != 0;
-                setZero();
+                setZero(MemRef.getRegister(0));
             }),
             // Branch operations
             branchOperation("BCS", ()->{return flags.carry;}),
@@ -103,8 +110,21 @@ public class CPU extends CPUBase {
             // Compare operations
             compareOperation("CMP", 0),
             compareOperation("CPX", 1),
-            compareOperation("CPY", 2)
-            
+            compareOperation("CPY", 2),
+            new Operation("DEC", (arg) -> {
+                set(arg, (byte)(get(arg)-1));
+                setZN(arg);
+            }),
+            new Operation("DEX", (arg) -> {
+                arg = MemRef.getRegister(1);
+                set(arg, (byte)(get(arg)-1));
+                setZN(arg);
+            }),
+            new Operation("DEY", (arg) -> {
+                arg = MemRef.getRegister(2);
+                set(arg, (byte)(get(arg)-1));
+                setZN(arg);
+            })
 
         };
 

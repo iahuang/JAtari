@@ -25,7 +25,7 @@ public class MemRef { // I decided "screw polymorphism" we're doing it this way
         this.indexed = indexed;
     }
 
-    public static MemRef Register(int r) {
+    public static MemRef getRegister(int r) {
         return new MemRef(3, r, 0, false, false, false);
     }
     public int getPointer(CPU c) {

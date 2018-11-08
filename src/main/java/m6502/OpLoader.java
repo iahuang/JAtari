@@ -18,14 +18,23 @@ public class OpLoader {
         if (s == "A") {
             return ArgType.NULL();
         }
-        a.addSize = (s.contains("abs") | s.contains("rel")) ? 2 : 1;
+
         a.mode = (s.contains("#") | s.contains("rel")) ? 1 : 2;
+        // If the specifier contains # or rel it means that the next value
+        // is meant to be taken literally (mode 1)
+        // Otherwise, it is meant to be interpreted as a memory address (mode 2)
+        if (s.contains("impl")) {
+            a.mode = 0;
+        }
+        // If the operation addressing type is "implied", there is no explicit
+        // memory address used and MemRef null can be used
         if (s.contains("X")) {
             a.offset = 1;
         }
         if (s.contains("Y")) {
             a.offset = 2;
         }
+
         if (s.contains("ind")) {
             a.indirect = true;
         }
@@ -38,7 +47,7 @@ public class OpLoader {
         return a;
     }
 
-    public void Load(CPU c, ClassLoader cl, String codeTablePath, String cycleTablePath) throws IOException {
+    public void Load(CPU c, ClassLoader cl, String codeTablePath, String infoTablePath) throws IOException {
         for (Operation op : c.ops.ops) {
             ops.put(op.name, op);
         }
@@ -63,15 +72,17 @@ public class OpLoader {
             opcode++;
         }
         // Parse cycle counts
-        in = cl.getResourceAsStream(cycleTablePath);
+        in = cl.getResourceAsStream(infoTablePath);
         reader = new BufferedReader(new InputStreamReader(in));
         while ((line = reader.readLine()) != null) {
             String[] splitLine = line.split(" ");
             Integer code = Integer.parseInt(splitLine[0], 16);
             Integer cycleCount = Integer.parseInt(splitLine[1]);
-            String extraCycle = splitLine[2];
+            Integer codeSize = Integer.parseInt(splitLine[1]);
+            String extraCycle = splitLine[3];
             opcodes.get(code).cycles = cycleCount;
-            
+            opcodes.get(code).atype.addSize = codeSize - 1;
+
             // Dynamic cycle count rules
             switch (extraCycle) {
             case "pageboundary":

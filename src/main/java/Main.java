@@ -1,5 +1,4 @@
 import m6502.CPU;
-import m6502.Operation;
 
 public class Main {
     public static void main(String[] args) throws Exception{
